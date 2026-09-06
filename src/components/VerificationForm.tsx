@@ -213,7 +213,7 @@ export function VerificationForm() {
         />
         <p className="hint">
           目前 {photos.length} 張 → 預估 {pageCount} 頁（每頁 15 張 + 印章）。
-          上傳時會自動壓縮，每張控制在約 1MB 以內。
+          上傳時會自動壓縮，每張控制在約 500KB 以內。
         </p>
       </section>
 

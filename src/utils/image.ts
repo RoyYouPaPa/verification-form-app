@@ -1,9 +1,9 @@
-// 瀏覽器端照片壓縮：手機照片常常好幾 MB，這裡在上傳當下就縮到每張 < 1MB。
+// 瀏覽器端照片壓縮：手機照片常常好幾 MB，這裡在上傳當下就縮到每張 < 500KB。
 // 策略：優先「保留尺寸、只降 JPEG 品質」；品質降到下限仍超標，才逐步縮小尺寸重試。
 // 同時套用 EXIF 方向（imageOrientation: 'from-image'），避免手機直式照片變橫的。
 
 export interface CompressOptions {
-  /** 單張目標大小上限（bytes），預設 1,000,000（≈1MB） */
+  /** 單張目標大小上限（bytes），預設 500,000（≈500KB） */
   maxBytes?: number;
   /** 長邊最大像素（避免過大尺寸），預設 2200；為「盡量保留尺寸」取較高值 */
   maxEdge?: number;
@@ -75,7 +75,7 @@ export async function compressImage(
   file: File,
   opts: CompressOptions = {}
 ): Promise<CompressResult> {
-  const maxBytes = opts.maxBytes ?? 1_000_000;
+  const maxBytes = opts.maxBytes ?? 500_000;
   const maxEdge = opts.maxEdge ?? 2200;
   const startQuality = opts.startQuality ?? 0.85;
   const minQuality = opts.minQuality ?? 0.5;
