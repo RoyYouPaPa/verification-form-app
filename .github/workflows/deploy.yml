@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+# push 到 main 自動 build 並部署到 GitHub Pages。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時只跑一個部署
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # 專案頁需要正確 base：預設用 repo 名稱組成 "/repo-name/"。
+      # 若使用自訂網域或 user/organization 頁，改成 VITE_BASE=/ 即可。
+      - name: Build
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+          # 密碼與儲存模式可用 repository secrets / variables 覆蓋：
+          VITE_APP_PASSWORD: ${{ secrets.VITE_APP_PASSWORD }}
+          VITE_STORAGE_MODE: ${{ vars.VITE_STORAGE_MODE }}
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

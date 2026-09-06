@@ -1,0 +1,237 @@
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --border: #d8dbe0;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --danger: #dc2626;
+  font-family: -apple-system, "PingFang TC", "Microsoft JhengHei",
+    "Noto Sans TC", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---- 密碼 gate ---- */
+.gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.gate-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  width: min(360px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+.gate-card h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+.gate-hint {
+  margin: 0;
+  color: var(--muted);
+}
+.gate-card input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+.gate-error {
+  color: var(--danger);
+  margin: 0;
+  font-size: 0.9rem;
+}
+.gate-note {
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin: 0.25rem 0 0;
+}
+
+/* ---- 主表單 ---- */
+.form-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+.app-header h1 {
+  font-size: 1.4rem;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+.row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+  row-gap: 0.6rem;
+  align-items: start;
+}
+.field-empty {
+  display: block;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 140px;
+}
+.field span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.field input,
+.field select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* ---- 按鈕 ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.btn.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.file-btn {
+  background: #eef2ff;
+}
+.gate-card button {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ---- 上傳器 ---- */
+.uploader-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.thumb-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+.thumb {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafafa;
+}
+.thumb img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  display: block;
+  background: #f0f0f0;
+}
+.thumb-index {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.thumb-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+}
+.thumb-actions button {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  width: 28px;
+  height: 26px;
+  cursor: pointer;
+}
+.thumb-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.thumb-actions .danger {
+  color: var(--danger);
+  border-color: #f0c0c0;
+}
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.message {
+  margin: 0;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+# 產出/暫存
+smoke-output.pdf
+
+# env（僅保留 .env.example）
+.env
+.env.*
+!.env.example
+
+# 編輯器 / 系統
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log
