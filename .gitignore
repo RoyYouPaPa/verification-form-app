@@ -7,6 +7,9 @@ dist-ssr
 # 產出/暫存
 smoke-output.pdf
 
+# 內部規格文件：本機保留，不進 repo
+SPEC.md
+
 # env（僅保留 .env.example）
 .env
 .env.*
