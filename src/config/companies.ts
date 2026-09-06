@@ -27,6 +27,8 @@ export interface CompanyConfig {
   leftFields: FieldDef[];
   /** 右欄欄位（由上到下） */
   rightFields: FieldDef[];
+  /** 檔名中段要用的欄位 key（例如鵬曜用「工程名稱」、澄遠用「驗收項目」）。 */
+  fileNameFieldKey: string;
   /** 印章圖檔路徑（相對於 base，例如 seals/pengyao.jpeg）。 */
   sealPath: string;
 }
@@ -45,6 +47,7 @@ export const companies: Record<string, CompanyConfig> = {
     ],
     leftFields: [f('客戶'), f('聯絡人'), f('電話'), f('傳真')],
     rightFields: [f('工程名稱'), f('工程地點'), f('製表人員')],
+    fileNameFieldKey: '工程名稱',
     sealPath: 'seals/pengyao.jpeg',
   },
   chengyuan: {
@@ -55,6 +58,7 @@ export const companies: Record<string, CompanyConfig> = {
     contactLines: [],
     leftFields: [f('客戶名稱'), f('電話'), f('分機'), f('製表人員')],
     rightFields: [f('聯絡人'), f('傳真'), f('驗收項目')],
+    fileNameFieldKey: '驗收項目',
     // 檔案可能尚未放置；載入失敗時 PDF/表單以灰色虛線框處理，不可 crash。
     sealPath: 'seals/chengyuan.png',
   },

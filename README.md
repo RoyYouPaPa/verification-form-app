@@ -93,6 +93,7 @@ myco: {
   contactLines: ['電話: ...'],      // 沒有就給 []
   leftFields: [{ key: '客戶' }, ...],
   rightFields: [{ key: '聯絡人' }, ...],
+  fileNameFieldKey: '工程名稱',       // 檔名中段用哪個欄位（未填則退回「驗收單」）
   sealPath: 'seals/myco.png',        // 放到 public/seals/
 },
 ```
