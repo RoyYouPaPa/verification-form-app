@@ -4,6 +4,7 @@ import { PhotoUploader, type PhotoItem } from './PhotoUploader';
 import { generatePdf, buildFileName } from '../pdf/generatePdf';
 import { loadFontBytes, loadSealBytes, fileToBytes } from '../pdf/assets';
 import { getStorage, type FormRecord } from '../storage';
+import { compressImage } from '../utils/image';
 
 const PHOTOS_PER_PAGE = 15;
 
@@ -23,6 +24,7 @@ export function VerificationForm() {
   const [date, setDate] = useState<string>(today());
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [busy, setBusy] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [message, setMessage] = useState('');
 
   const company: CompanyConfig = companies[companyKey];
@@ -35,13 +37,35 @@ export function VerificationForm() {
   const setField = (key: string, value: string) =>
     setFields((prev) => ({ ...prev, [key]: value }));
 
-  const handleAdd = (files: FileList) => {
-    const added: PhotoItem[] = Array.from(files).map((file) => ({
-      id: uid(),
-      file,
-      url: URL.createObjectURL(file),
-    }));
-    setPhotos((prev) => [...prev, ...added]);
+  const handleAdd = async (files: FileList) => {
+    // 上傳當下就壓縮：每張盡量保留尺寸、降品質，目標 < 1MB。
+    // 逐張處理（避免一次解碼多張大圖造成記憶體尖峰），完成一張就顯示一張。
+    setProcessing(true);
+    try {
+      for (const file of Array.from(files)) {
+        let outFile: File;
+        try {
+          const { blob } = await compressImage(file);
+          const name = file.name.replace(/\.[^./]+$/, '') + '.jpg';
+          outFile =
+            blob instanceof File && blob === (file as unknown as Blob)
+              ? file
+              : new File([blob], name, { type: blob.type || 'image/jpeg' });
+        } catch {
+          // 解碼/壓縮失敗（例如特殊格式）→ 退回原檔，不阻斷流程。
+          outFile = file;
+        }
+        const item: PhotoItem = {
+          id: uid(),
+          file: outFile,
+          url: URL.createObjectURL(outFile),
+          sizeKB: Math.round(outFile.size / 1024),
+        };
+        setPhotos((prev) => [...prev, item]);
+      }
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleRemove = (id: string) => {
@@ -182,12 +206,14 @@ export function VerificationForm() {
         <h2>照片（順序即 PDF 內排列順序）</h2>
         <PhotoUploader
           photos={photos}
+          processing={processing}
           onAdd={handleAdd}
           onRemove={handleRemove}
           onMove={handleMove}
         />
         <p className="hint">
-          目前 {photos.length} 張 → 預估 {pageCount} 頁（每頁 15 張 + 印章）
+          目前 {photos.length} 張 → 預估 {pageCount} 頁（每頁 15 張 + 印章）。
+          上傳時會自動壓縮，每張控制在約 1MB 以內。
         </p>
       </section>
 
@@ -195,9 +221,9 @@ export function VerificationForm() {
         <button
           className="btn primary"
           onClick={handleGenerate}
-          disabled={busy}
+          disabled={busy || processing}
         >
-          {busy ? '產生中…' : '產生 PDF'}
+          {busy ? '產生中…' : processing ? '照片壓縮中…' : '產生 PDF'}
         </button>
         {message && <p className="message">{message}</p>}
       </section>

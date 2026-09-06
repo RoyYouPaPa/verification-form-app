@@ -2,12 +2,14 @@ import { useRef, type ChangeEvent } from 'react';
 
 export interface PhotoItem {
   id: string;
-  file: File;
+  file: File; // 壓縮後的檔案（用於 PDF）
   url: string; // object URL，用於縮圖預覽
+  sizeKB: number; // 壓縮後大小（KB），顯示用
 }
 
 interface Props {
   photos: PhotoItem[];
+  processing: boolean;
   onAdd: (files: FileList) => void;
   onRemove: (id: string) => void;
   onMove: (id: string, dir: -1 | 1) => void;
@@ -15,7 +17,13 @@ interface Props {
 
 // 多張照片上傳：縮圖清單、可刪除單張、可用上下按鈕調整順序。
 // 照片順序 = PDF 內排列順序。
-export function PhotoUploader({ photos, onAdd, onRemove, onMove }: Props) {
+export function PhotoUploader({
+  photos,
+  processing,
+  onAdd,
+  onRemove,
+  onMove,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +49,7 @@ export function PhotoUploader({ photos, onAdd, onRemove, onMove }: Props) {
           />
         </label>
         <span className="count">已選 {photos.length} 張</span>
+        {processing && <span className="processing">壓縮處理中…</span>}
       </div>
 
       {photos.length === 0 ? (
@@ -51,6 +60,7 @@ export function PhotoUploader({ photos, onAdd, onRemove, onMove }: Props) {
             <li className="thumb" key={p.id}>
               <div className="thumb-index">{i + 1}</div>
               <img src={p.url} alt={`photo-${i + 1}`} />
+              <div className="thumb-size">{p.sizeKB} KB</div>
               <div className="thumb-actions">
                 <button
                   type="button"

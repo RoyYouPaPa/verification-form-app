@@ -105,6 +105,16 @@ body {
   font-size: 0.75rem;
   padding: 1.25rem 0 1.75rem;
 }
+.processing {
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+.thumb-size {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 2px;
+}
 .field {
   display: flex;
   flex-direction: column;

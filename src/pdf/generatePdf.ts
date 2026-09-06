@@ -379,8 +379,11 @@ export function buildFileName(
 ): string {
   const customer =
     fields['客戶'] || fields['客戶名稱'] || '未填客戶';
+  // 檔名中段用「工程名稱」（澄遠改用其對應的「驗收項目」）；未填則退回「驗收單」。
+  const project =
+    fields['工程名稱'] || fields['驗收項目'] || '驗收單';
   const ymd = date.replace(/-/g, '');
-  const raw = `${company.name}_${customer}_驗收單_${ymd}`;
+  const raw = `${company.name}_${customer}_${project}_${ymd}`;
   const safe = raw.replace(/[\\/:*?"<>|]/g, '_');
   return `${safe}.pdf`;
 }
