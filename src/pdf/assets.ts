@@ -11,7 +11,7 @@ export async function loadFontBytes(): Promise<Uint8Array> {
 }
 
 /**
- * 抓取印章 bytes；若不存在（例如澄遠印章尚未放置）回傳 null，
+ * 抓取印章 bytes；若不存在（例如某公司印章尚未放置）回傳 null，
  * 讓 PDF 以「印章待補」占位框處理，不 crash。
  */
 export async function loadSealBytes(sealPath: string): Promise<Uint8Array | null> {

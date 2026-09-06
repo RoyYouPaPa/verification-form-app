@@ -52,9 +52,6 @@ export function PasswordGate({ children }: { children: ReactNode }) {
         />
         {error && <p className="gate-error">{error}</p>}
         <button type="submit">進入</button>
-        <p className="gate-note">
-          此密碼僅用於避免公開瀏覽，並非強資安機制。
-        </p>
       </form>
     </div>
   );

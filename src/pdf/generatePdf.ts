@@ -127,7 +127,7 @@ function drawLabelValue(
 }
 
 /**
- * 鵬曜版型：公司名置中於左區 + 右上聯絡資訊；標題置中；
+ * boxed 版型：公司名靠左 + 右上聯絡資訊；標題置中；
  * 客戶資訊為「有框線的表格盒」。回傳照片區頂端 y。
  */
 function drawHeaderBoxed(ctx: HeaderCtx): number {
@@ -215,7 +215,7 @@ function drawHeaderBoxed(ctx: HeaderCtx): number {
 }
 
 /**
- * 澄遠版型：公司名 + 標題全寬置中、無聯絡資訊；
+ * plain 版型：公司名 + 標題全寬置中、無聯絡資訊；
  * 客戶資訊為「標籤: 值」純文字、無框線。回傳照片區頂端 y。
  */
 function drawHeaderPlain(ctx: HeaderCtx): number {

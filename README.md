@@ -89,6 +89,7 @@ GitHub Pages 的頁面內容**公開可存取**（除非用 GitHub Enterprise �
 myco: {
   key: 'myco',
   name: '範例工程有限公司',
+  headerStyle: 'boxed',             // 'boxed'（客戶資訊加框）或 'plain'（無框純文字）
   contactLines: ['電話: ...'],      // 沒有就給 []
   leftFields: [{ key: '客戶' }, ...],
   rightFields: [{ key: '聯絡人' }, ...],
@@ -100,10 +101,9 @@ myco: {
 
 ### 替換 / 新增印章
 
-把印章圖檔（jpeg/png）放到 `public/seals/`，檔名對應 config 的 `sealPath`。
+把印章圖檔（jpeg/png）放到 `public/seals/`，檔名對應該公司 config 的 `sealPath`。
 
-- 目前已放 `public/seals/pengyao.jpeg`（鵬曜）。
-- **澄遠印章 `public/seals/chengyuan.png` 尚未放置**：目前 PDF 印章格會顯示灰色虛線框 +「（印章待補）」，不會出錯。放入檔案後即自動顯示。
+若對應的印章檔不存在，PDF 的印章格會顯示灰色虛線框 +「（印章待補）」，不會出錯；放入檔案後即自動顯示。
 
 ## 專案結構
 
