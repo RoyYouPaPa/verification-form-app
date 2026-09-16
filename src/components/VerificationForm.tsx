@@ -8,12 +8,6 @@ import { compressImage } from '../utils/image';
 
 const PHOTOS_PER_PAGE = 15;
 
-function today(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
 function uid(): string {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
@@ -21,7 +15,7 @@ function uid(): string {
 export function VerificationForm() {
   const [companyKey, setCompanyKey] = useState<string>(companyOrder[0]);
   const [fields, setFields] = useState<Record<string, string>>({});
-  const [date, setDate] = useState<string>(today());
+  const [date, setDate] = useState<string>(''); // 預設不填；沒填則 PDF 不顯示日期
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [busy, setBusy] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -165,7 +159,7 @@ export function VerificationForm() {
           </label>
 
           <label className="field">
-            <span>日期</span>
+            <span>日期（可留空，留空則不顯示）</span>
             <input
               type="date"
               value={date}

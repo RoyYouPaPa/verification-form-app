@@ -207,9 +207,13 @@ function drawHeaderBoxed(ctx: HeaderCtx): number {
   drawCol(company.leftFields, MARGIN_X);
   drawCol(company.rightFields, midX);
 
-  // 日期 / 頁數：置於盒子右上外側上方（聯絡資訊下方）
-  drawRight(page, font, `日期: ${date}`, rx, ty - 2, 9);
-  drawRight(page, font, `頁數: ${pageNumber}`, rx, ty - 14, 9);
+  // 日期 / 頁數：置於盒子右上外側上方（聯絡資訊下方）。未填日期則不顯示日期列。
+  let metaY = ty - 2;
+  if (date) {
+    drawRight(page, font, `日期: ${date}`, rx, metaY, 9);
+    metaY -= 12;
+  }
+  drawRight(page, font, `頁數: ${pageNumber}`, rx, metaY, 9);
 
   return boxBottom - 10;
 }
@@ -225,10 +229,14 @@ function drawHeaderPlain(ctx: HeaderCtx): number {
   drawCentered(page, font, company.name, PAGE_W / 2, PAGE_H - 42, 20);
   drawCentered(page, font, '驗收單', PAGE_W / 2, PAGE_H - 72, 22);
 
-  // 右上：日期 / 頁數
+  // 右上：日期 / 頁數。未填日期則不顯示日期列。
   const rx = PAGE_W - MARGIN_X;
-  drawRight(page, font, `日期: ${date}`, rx, PAGE_H - 22, 9);
-  drawRight(page, font, `頁數: ${pageNumber}`, rx, PAGE_H - 34, 9);
+  let metaY = PAGE_H - 22;
+  if (date) {
+    drawRight(page, font, `日期: ${date}`, rx, metaY, 9);
+    metaY -= 12;
+  }
+  drawRight(page, font, `頁數: ${pageNumber}`, rx, metaY, 9);
 
   // 客戶資訊：兩欄「標籤: 值」純文字、無框線
   const fieldSize = 11;
@@ -381,8 +389,11 @@ export function buildFileName(
     fields['客戶'] || fields['客戶名稱'] || '未填客戶';
   // 檔名中段用各公司設定的欄位（鵬曜=工程名稱、澄遠=驗收項目）；未填則退回「驗收單」。
   const project = fields[company.fileNameFieldKey] || '驗收單';
-  const ymd = date.replace(/-/g, '');
-  const raw = `${company.name}_${customer}_${project}_${ymd}`;
+  // 未填日期則檔名不接日期段。
+  const ymd = date ? date.replace(/-/g, '') : '';
+  const raw = [company.name, customer, project, ymd]
+    .filter(Boolean)
+    .join('_');
   const safe = raw.replace(/[\\/:*?"<>|]/g, '_');
   return `${safe}.pdf`;
 }
