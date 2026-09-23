@@ -74,6 +74,39 @@ function containRect(
   return { x, y, w, h };
 }
 
+// 在照片右下角壓日期戳記（半透明黑底 + 亮黃字，避免壓在亮/暗背景上看不清）。
+function drawDateStamp(
+  page: PDFPage,
+  font: PDFFont,
+  text: string,
+  box: { x: number; y: number; w: number; h: number }
+) {
+  const size = Math.max(7, Math.min(10, box.w * 0.085));
+  const padX = 3;
+  const padY = 2;
+  const tw = font.widthOfTextAtSize(text, size);
+  const bgW = tw + padX * 2;
+  const bgH = size + padY * 2;
+  const margin = 3;
+  const bgX = box.x + box.w - bgW - margin;
+  const bgY = box.y + margin;
+  page.drawRectangle({
+    x: bgX,
+    y: bgY,
+    width: bgW,
+    height: bgH,
+    color: rgb(0, 0, 0),
+    opacity: 0.5,
+  });
+  page.drawText(text, {
+    x: bgX + padX,
+    y: bgY + padY,
+    size,
+    font,
+    color: rgb(1, 0.82, 0.15),
+  });
+}
+
 interface HeaderCtx {
   page: PDFPage;
   font: PDFFont;
@@ -322,7 +355,7 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
       };
     };
 
-    const drawInCell = (img: PDFImage, cell: number) => {
+    const drawInCell = (img: PDFImage, cell: number, stamp?: string) => {
       const { x, y } = cellXY(cell);
       const box = containRect(
         img.width,
@@ -333,6 +366,8 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
         cellH - CELL_PAD * 2
       );
       page.drawImage(img, { x: box.x, y: box.y, width: box.w, height: box.h });
+      // 有填日期時，於照片右下角壓上日期（半透明黑底 + 亮字，像相機時間戳）。
+      if (stamp) drawDateStamp(page, font, stamp, box);
     };
 
     const pagePhotos = photos.slice(
@@ -340,12 +375,12 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
       p * PHOTOS_PER_PAGE + PHOTOS_PER_PAGE
     );
 
-    // 前 15 格放照片（不足則留白，不畫任何格線）
+    // 前 15 格放照片（不足則留白，不畫任何格線）。有日期則每張右下角壓日期。
     for (let cell = 0; cell < PHOTOS_PER_PAGE; cell++) {
       const photoBytes = pagePhotos[cell];
       if (!photoBytes) continue;
       const img = await embedImage(doc, photoBytes);
-      drawInCell(img, cell);
+      drawInCell(img, cell, date || undefined);
     }
 
     // 第 16 格（右下）：印章，或「印章待補」占位。
