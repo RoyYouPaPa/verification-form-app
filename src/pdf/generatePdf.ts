@@ -82,12 +82,12 @@ function drawDateStamp(
   text: string,
   box: { x: number; y: number; w: number; h: number }
 ) {
-  const size = Math.max(8, Math.min(11, box.w * 0.095));
+  const size = Math.max(6, Math.min(8.5, box.w * 0.072));
   const tw = font.widthOfTextAtSize(text, size);
-  const margin = 4;
+  const margin = 3;
   const x = box.x + box.w - tw - margin;
   const y = box.y + margin;
-  const stroke = Math.max(0.6, size * 0.08); // 描邊粗細
+  const stroke = Math.max(0.5, size * 0.08); // 描邊粗細
 
   for (let i = 0; i < 8; i++) {
     const a = (Math.PI / 4) * i;

@@ -69,7 +69,7 @@ export const companies: Record<string, CompanyConfig> = {
     leftFields: [f('客戶名稱'), f('電話'), f('分機'), f('製表人員')],
     rightFields: [f('聯絡人'), f('傳真'), f('驗收項目')],
     fileNameFieldKey: '驗收項目',
-    dateStampFont: 'Courier-Bold',
+    dateStampFont: 'Times-Bold',
     // 檔案可能尚未放置；載入失敗時 PDF/表單以灰色虛線框處理，不可 crash。
     sealPath: 'seals/chengyuan.png',
   },
