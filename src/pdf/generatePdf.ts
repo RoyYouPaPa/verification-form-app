@@ -74,37 +74,32 @@ function containRect(
   return { x, y, w, h };
 }
 
-// 在照片右下角壓日期戳記（半透明黑底 + 亮黃字，避免壓在亮/暗背景上看不清）。
+// 在照片右下角壓日期戳記：紅字 + 黑色描邊（繞著數字外圍），無底色。
+// 描邊作法：先把黑字往 8 個方向各偏移一點畫一遍，最後在正中央疊紅字。
 function drawDateStamp(
   page: PDFPage,
   font: PDFFont,
   text: string,
   box: { x: number; y: number; w: number; h: number }
 ) {
-  const size = Math.max(7, Math.min(10, box.w * 0.085));
-  const padX = 3;
-  const padY = 2;
+  const size = Math.max(8, Math.min(11, box.w * 0.095));
   const tw = font.widthOfTextAtSize(text, size);
-  const bgW = tw + padX * 2;
-  const bgH = size + padY * 2;
-  const margin = 3;
-  const bgX = box.x + box.w - bgW - margin;
-  const bgY = box.y + margin;
-  page.drawRectangle({
-    x: bgX,
-    y: bgY,
-    width: bgW,
-    height: bgH,
-    color: rgb(0, 0, 0),
-    opacity: 0.5,
-  });
-  page.drawText(text, {
-    x: bgX + padX,
-    y: bgY + padY,
-    size,
-    font,
-    color: rgb(1, 0.82, 0.15),
-  });
+  const margin = 4;
+  const x = box.x + box.w - tw - margin;
+  const y = box.y + margin;
+  const stroke = Math.max(0.6, size * 0.08); // 描邊粗細
+
+  for (let i = 0; i < 8; i++) {
+    const a = (Math.PI / 4) * i;
+    page.drawText(text, {
+      x: x + Math.cos(a) * stroke,
+      y: y + Math.sin(a) * stroke,
+      size,
+      font,
+      color: rgb(0, 0, 0),
+    });
+  }
+  page.drawText(text, { x, y, size, font, color: rgb(0.9, 0.05, 0.05) });
 }
 
 interface HeaderCtx {
@@ -315,6 +310,8 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
   doc.registerFontkit(fontkit);
   // 預設 subset:false，內嵌完整字型確保中文不漏字（見 subsetFont 說明）。
   const font = await doc.embedFont(fontBytes, { subset: subsetFont });
+  // 日期戳字型：各公司設定不同的 PDF 標準字型（免內嵌字檔）。
+  const dateFont = await doc.embedFont(company.dateStampFont);
 
   const sealImage = sealBytes ? await embedImage(doc, sealBytes) : null;
 
@@ -367,7 +364,7 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
       );
       page.drawImage(img, { x: box.x, y: box.y, width: box.w, height: box.h });
       // 有填日期時，於照片右下角壓上日期（半透明黑底 + 亮字，像相機時間戳）。
-      if (stamp) drawDateStamp(page, font, stamp, box);
+      if (stamp) drawDateStamp(page, dateFont, stamp, box);
     };
 
     const pagePhotos = photos.slice(
