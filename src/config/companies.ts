@@ -31,6 +31,8 @@ export interface CompanyConfig {
   fileNameFieldKey: string;
   /** 照片日期戳使用的 PDF 標準字型（各公司可不同）。 */
   dateStampFont: DateStampFont;
+  /** PDF 上日期顯示的分隔符（表頭日期與照片日期戳），例如 '-' → 2026-08-07、'/' → 2026/08/07。 */
+  dateSeparator: '-' | '/' | '.';
   /** 印章圖檔路徑（相對於 base，例如 seals/pengyao.jpeg）。 */
   sealPath: string;
 }
@@ -58,6 +60,7 @@ export const companies: Record<string, CompanyConfig> = {
     rightFields: [f('工程名稱'), f('工程地點'), f('製表人員')],
     fileNameFieldKey: '工程名稱',
     dateStampFont: 'Helvetica-Bold',
+    dateSeparator: '-',
     sealPath: 'seals/pengyao.jpeg',
   },
   chengyuan: {
@@ -70,6 +73,7 @@ export const companies: Record<string, CompanyConfig> = {
     rightFields: [f('聯絡人'), f('傳真'), f('驗收項目')],
     fileNameFieldKey: '驗收項目',
     dateStampFont: 'Times-Bold',
+    dateSeparator: '/',
     // 檔案可能尚未放置；載入失敗時 PDF/表單以灰色虛線框處理，不可 crash。
     sealPath: 'seals/chengyuan.png',
   },

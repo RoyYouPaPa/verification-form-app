@@ -312,6 +312,8 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
   const font = await doc.embedFont(fontBytes, { subset: subsetFont });
   // 日期戳字型：各公司設定不同的 PDF 標準字型（免內嵌字檔）。
   const dateFont = await doc.embedFont(company.dateStampFont);
+  // PDF 上顯示的日期（依公司設定的分隔符，例如澄遠用 2026/08/07）。
+  const displayDate = date ? date.replace(/-/g, company.dateSeparator) : '';
 
   const sealImage = sealBytes ? await embedImage(doc, sealBytes) : null;
 
@@ -325,7 +327,7 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
       font,
       company,
       fields,
-      date,
+      date: displayDate,
       pageNumber: p + 1,
     });
 
@@ -377,7 +379,7 @@ export async function generatePdf(input: GeneratePdfInput): Promise<Uint8Array> 
       const photoBytes = pagePhotos[cell];
       if (!photoBytes) continue;
       const img = await embedImage(doc, photoBytes);
-      drawInCell(img, cell, date || undefined);
+      drawInCell(img, cell, displayDate || undefined);
     }
 
     // 第 16 格（右下）：印章，或「印章待補」占位。
